@@ -1,0 +1,8 @@
+hangman-game/
+│
+├── .gitignore
+├── README.md
+├── hangman.py
+├── output/
+│   └── sample_output.txt
+└── report.md
