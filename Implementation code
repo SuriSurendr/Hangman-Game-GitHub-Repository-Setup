@@ -1,0 +1,164 @@
+import random
+import os
+
+def load_words(file_path='words.txt'):
+    """Load words from a text file."""
+    with open(file_path, 'r') as file:
+        words = [word.strip().upper() for word in file.readlines()]
+    return words
+
+def select_random_word(words):
+    """Select a random word from the list."""
+    return random.choice(words)
+
+def initialize_game(word, max_attempts=6):
+    """Initialize game state."""
+    return {
+        'word': word,
+        'guessed_letters': set(),
+        'attempts_left': max_attempts,
+        'max_attempts': max_attempts,
+        'game_over': False,
+        'won': False
+    }
+
+def display_game_state(game_state):
+    """Display current game state to the player."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+    
+    word_display = []
+    for letter in game_state['word']:
+        if letter in game_state['guessed_letters']:
+            word_display.append(letter)
+        else:
+            word_display.append('_')
+    
+    print("\nHANGMAN GAME")
+    print("-----------")
+    print(f"Word: {' '.join(word_display)}")
+    print(f"Attempts left: {game_state['attempts_left']}/{game_state['max_attempts']}")
+    print(f"Guessed letters: {', '.join(sorted(game_state['guessed_letters']))}")
+    print_hangman(game_state['max_attempts'] - game_state['attempts_left'])
+
+def print_hangman(failed_attempts):
+    """Print hangman ASCII art based on failed attempts."""
+    stages = [
+        """
+           -----
+           |   |
+               |
+               |
+               |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+               |
+               |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+           |   |
+               |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|   |
+               |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|\\  |
+               |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|\\  |
+          /    |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|\\  |
+          / \\  |
+               |
+        """
+    ]
+    
+    print(stages[min(failed_attempts, len(stages)-1)])
+
+def process_guess(guess, game_state):
+    """Process player's guess and update game state."""
+    guess = guess.upper()
+    
+    if guess in game_state['guessed_letters']:
+        print("You already guessed that letter!")
+        return
+    
+    game_state['guessed_letters'].add(guess)
+    
+    if guess not in game_state['word']:
+        game_state['attempts_left'] -= 1
+        print(f"Wrong guess! '{guess}' is not in the word.")
+    else:
+        print(f"Good guess! '{guess}' is in the word.")
+    
+    # Check win condition
+    if all(letter in game_state['guessed_letters'] for letter in game_state['word']):
+        game_state['game_over'] = True
+        game_state['won'] = True
+    
+    # Check lose condition
+    if game_state['attempts_left'] <= 0:
+        game_state['game_over'] = True
+        game_state['won'] = False
+
+def play_game():
+    """Main game loop."""
+    words = load_words()
+    secret_word = select_random_word(words)
+    game_state = initialize_game(secret_word)
+    
+    while not game_state['game_over']:
+        display_game_state(game_state)
+        
+        guess = input("\nGuess a letter: ").upper()
+        
+        if len(guess) != 1 or not guess.isalpha():
+            print("Please enter a single letter!")
+            continue
+        
+        process_guess(guess, game_state)
+    
+    display_game_state(game_state)
+    
+    if game_state['won']:
+        print(f"\nCongratulations! You guessed the word: {game_state['word']}")
+    else:
+        print(f"\nGame over! The word was: {game_state['word']}")
+    
+    play_again = input("\nWould you like to play again? (y/n): ").lower()
+    if play_again == 'y':
+        play_game()
+    else:
+        print("Thanks for playing!")
+
+if __name__ == "__main__":
+    print("Welcome to Hangman!")
+    play_game()
