@@ -1,0 +1,35 @@
+HANGMAN GAME
+-----------
+Word: _ _ _ _ _ _
+Attempts left: 6/6
+Guessed letters: 
+
+           -----
+           |   |
+               |
+               |
+               |
+               |
+
+Guess a letter: e
+Good guess! 'E' is in the word.
+
+[Game continues...]
+
+HANGMAN GAME
+-----------
+Word: P Y T H O N
+Attempts left: 4/6
+Guessed letters: E, H, N, O, P, T, Y
+
+           -----
+           |   |
+           O   |
+          /|   |
+               |
+               |
+
+Congratulations! You guessed the word: PYTHON
+
+Would you like to play again? (y/n): n
+Thanks for playing!
